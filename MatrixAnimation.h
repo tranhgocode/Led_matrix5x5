@@ -32,20 +32,40 @@ const byte chu[][5] = {
     {0x1f,0x02,0x04,0x08,0x1f}, //Z
 };
 
-byte frame_Giot_nuoc[][5] = {
-  {0x00,0x00,0x04,0x00,0x00},
-  {0x00,0x04,0x0a,0x04,0x00},
-  {0x04,0x0a,0x11,0x0a,0x04},
-  {0x0a,0x11,0x00,0x11,0x0a},
-  {0x11,0x00,0x00,0x00,0x11}
+const byte frame_Giot_nuoc[][5] = {
+      {0x00,0x00,0x04,0x00,0x00},
+      {0x00,0x04,0x0a,0x04,0x00},
+      {0x04,0x0a,0x11,0x0a,0x04},
+      {0x0a,0x11,0x00,0x11,0x0a},
+      {0x11,0x00,0x00,0x00,0x11}
 };
 
+// các hàm của cho chữ chạy dọc
+String InHoa(String text);
+int TaoTextBuffer(String text, byte fullBuffer[][5]);
+void HienThiFrameDoc(byte fullBuffer[][5], int startRow, int totalRows);
+void scrollStrDoc(String text);
 
+// các hàm của cho chữ chạy ngang 
+int TaoBuffer(String text, byte displayData[][200]);
+void HienThiFrameNgang(byte displayData[][200], int shift, int totalCols, byte leftMatrix[], byte rightMatrix[]);
+void TocDoFrameNgang(byte leftMatrix[], byte rightMatrix[], int duration);
+void scrollStrNgang(String text);
 
+// các hàm của animation xoay 
+void LedXoay(int cycles, int speed);
 
+// các hàm của nháy ngẫu nhiên mà đến sáng theo tỉ lệ
+void randomFlicker(int duration, int flickerRate);
 
+// các hàm của điểm nháy ngẫu nhiên
+void randomPixelFlicker(int duration, int density);
 
+// các hàm của hiệu ứng giọt nước 
+void HieuUngGiotNuoc(int cycles, int speed);
 
+// các hàm của hiệu ứng mưa rơi 
+void HieuUngMua(int duration, int density);
 
 #endif // MATRIX_ANIMATION_H
 
