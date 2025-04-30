@@ -41,7 +41,7 @@ const byte frame_Giot_nuoc[][5] = {
 };
 
 // hàm hiện thị 1 frame
-void hienthi(byte leftMatrix[], byte rightMatrix[])
+void hienthi(byte leftMatrix[], byte rightMatrix[]);
 
 // các hàm của cho chữ chạy dọc
 String InHoa(String text);
@@ -69,5 +69,11 @@ void HieuUngGiotNuoc(int cycles, int speed);
 
 // các hàm của hiệu ứng mưa rơi 
 void HieuUngMua(int duration, int density);
+
+// các hàm của hiệu ứng sáng theo hàng 
+void SangTheoHang(int cycles, int rowSpeed, int rowDelay);
+
+// các hàm của hiệu ứng sáng xen kẽ 
+void SangSoLe(int cycles, int speed);
 
 #endif // MATRIX_ANIMATION_H
