@@ -40,6 +40,9 @@ const byte frame_Giot_nuoc[][5] = {
       {0x11,0x00,0x00,0x00,0x11}
 };
 
+// hàm hiện thị 1 frame
+void hienthi(byte leftMatrix[], byte rightMatrix[])
+
 // các hàm của cho chữ chạy dọc
 String InHoa(String text);
 int TaoTextBuffer(String text, byte fullBuffer[][5]);
@@ -68,5 +71,3 @@ void HieuUngGiotNuoc(int cycles, int speed);
 void HieuUngMua(int duration, int density);
 
 #endif // MATRIX_ANIMATION_H
-
-
