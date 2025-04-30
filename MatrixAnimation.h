@@ -1,66 +1,17 @@
-#ifndef MatrixAnimation_h
-#define MatrixAnimation_h
+#ifndef MATRIX_ANIMATION_H
+#define MATRIX_ANIMATION_H
 
-#include "Arduino.h"
+#include <Arduino.h>
 
-    void begin();
-    /**
-     * Hiển thị dữ liệu lên ma trận LED
-     * @param leftMatrix Mảng 5 byte chứa dữ liệu cho ma trận bên trái
-     * @param rightMatrix Mảng 5 byte chứa dữ liệu cho ma trận bên phải
-     */
-    void hienthi(byte leftMatrix[], byte rightMatrix[]);
+class MatrixAnimation {
+  private:
+    // Kết nối chân
+    int _shPin;  // Shift Clock (SH)
+    int _dsPin;  // Data Serial (DS)
+    int _stPin;  // Storage Clock (ST)
+    int _rowPins[5];  // Chân hàng
     
-    /**
-     * Cuộn văn bản theo chiều ngang từ phải sang trái
-     * @param text Chuỗi văn bản cần hiển thị
-     * @param speedMs Tốc độ cuộn (ms mỗi khung hình)
-     */
-    void scrollStrNgang(String text, int speedMs = 100);
-    
-    /**
-     * Cuộn văn bản theo chiều dọc từ dưới lên trên
-     * @param text Chuỗi văn bản cần hiển thị
-     * @param speedMs Tốc độ cuộn (ms mỗi khung hình)
-     */
-    void scrollStrDoc(String text, int speedMs = 500);
-    
-    /**
-     * Tạo hiệu ứng xoay theo hình xoắn ốc
-     * @param cycles Số chu kỳ xoay
-     * @param speed Tốc độ xoay (ms cho mỗi bước)
-     */
-    void LedXoay(int cycles, int speed);
-    
-    /**
-     * Tạo hiệu ứng nháy ngẫu nhiên theo hàng
-     * @param duration Thời gian hiệu ứng (ms)
-     * @param flickerRate Tỉ lệ phần trăm nháy (0-100)
-     */
-    void randomFlicker(int duration, int flickerRate);
-    
-    /**
-     * Tạo hiệu ứng nháy ngẫu nhiên theo từng pixel
-     * @param duration Thời gian hiệu ứng (ms)
-     * @param density Số lượng pixel sáng trong mỗi khung hình
-     */
-    void randomPixelFlicker(int duration, int density);
-    
-    /**
-     * Hiển thị một ký tự cụ thể trên ma trận
-     * @param c Ký tự cần hiển thị (A-Z)
-     * @param duration Thời gian hiển thị (ms)
-     */
-    void displayChar(char c, int duration = 1000);
-    
-    /**
-     * Hiển thị một chuỗi ký tự (không cuộn)
-     * @param text Chuỗi cần hiển thị (tối đa 2 ký tự)
-     * @param duration Thời gian hiển thị (ms)
-     */
-    void displayText(String text, int duration = 1000);
-    
-    // Dữ liệu mẫu bit cho các ký tự A-Z
+    // Mẫu ký tự cho A-Z (ma trận 5x5)
     const byte _chu[26][5] = {
       {0x04,0x0a,0x1f,0x11,0x11}, //A 
       {0x1c,0x12,0x1c,0x12,0x1c}, //B
@@ -90,54 +41,30 @@
       {0x1f,0x02,0x04,0x08,0x1f}, //Z
     };
     
-    /**
-     * Chuyển đổi chuỗi thành chữ in hoa
-     * @param text Chuỗi đầu vào
-     * @return Chuỗi đã chuyển đổi thành in hoa
-     */
+    // Các hàm hỗ trợ
+    void hienthi(byte leftMatrix[], byte rightMatrix[]);
     String InHoa(String text);
-    
-    /**
-     * Tạo bộ đệm cho văn bản cuộn dọc
-     * @param text Chuỗi văn bản đầu vào
-     * @param fullBuffer Mảng lưu trữ dữ liệu hiển thị của toàn bộ chuỗi
-     * @return Tổng số hàng cần thiết
-     */
-    int createTextBuffer(String text, byte fullBuffer[][5]);
-    
-    /**
-     * Hiển thị một khung hình của văn bản cuộn dọc
-     * @param fullBuffer Bộ đệm chứa dữ liệu hiển thị
-     * @param startRow Vị trí bắt đầu hiển thị trong bộ đệm
-     * @param totalRows Tổng số hàng của toàn bộ dữ liệu
-     * @param speedMs Thời gian hiển thị mỗi khung (ms)
-     */
-    void displayTextFrame(byte fullBuffer[][5], int startRow, int totalRows, int speedMs);
-    
-    /**
-     * Chuyển đổi văn bản thành dữ liệu hiển thị cho ma trận LED
-     * @param text Chuỗi văn bản cần hiển thị
-     * @param displayData Mảng 2 chiều để lưu dữ liệu hiển thị [hàng][cột]
-     * @return Tổng số cột được sử dụng trong displayData
-     */
     int chuanBiDuLieuVanBan(String text, byte displayData[][200]);
-    
-    /**
-     * Cập nhật dữ liệu cho ma trận LED trái và phải dựa trên vị trí cuộn
-     * @param displayData Mảng 2 chiều chứa dữ liệu hiển thị [hàng][cột]
-     * @param shift Vị trí cuộn hiện tại
-     * @param totalCols Tổng số cột trong dữ liệu hiển thị
-     * @param leftMatrix Mảng đầu ra cho ma trận trái
-     * @param rightMatrix Mảng đầu ra cho ma trận phải
-     */
     void capNhatDuLieuMaTran(byte displayData[][200], int shift, int totalCols, byte leftMatrix[], byte rightMatrix[]);
-    
-    /**
-     * Hiển thị một khung hình trong thời gian xác định
-     * @param leftMatrix Dữ liệu cho ma trận trái
-     * @param rightMatrix Dữ liệu cho ma trận phải
-     * @param duration Thời gian hiển thị tính bằng mili giây
-     */
     void hienThiKhungHinh(byte leftMatrix[], byte rightMatrix[], int duration);
-
-#endif
+    int createTextBuffer(String text, byte fullBuffer[][5]);
+    void displayTextFrame(byte fullBuffer[][5], int startRow, int totalRows);
+    
+  public:
+    // Hàm khởi tạo
+    MatrixAnimation(int shPin, int dsPin, int stPin, int row1, int row2, int row3, int row4, int row5);
+    
+    // Khởi tạo các chân
+    void begin();
+    
+    // Các phương thức hoạt ảnh
+    void scrollStrNgang(String text, int speed = 100);
+    void scrollStrDoc(String text, int speed = 500);
+    void LedXoay(int cycles = 1, int speed = 50);
+    void randomFlicker(int duration = 2000, int flickerRate = 10);
+    void randomPixelFlicker(int duration = 2000, int density = 5);
+    
+    // Thêm các hoạt ảnh tùy chỉnh của bạn
+    // void hieuUngSong(int cycles = 3, int speed = 100);
+    // void hieuUngMua(int duration = 3000, int density = 2);
+};
