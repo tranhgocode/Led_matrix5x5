@@ -74,6 +74,6 @@ void HieuUngMua(int duration, int density);
 void SangTheoHang(int cycles, int rowSpeed, int rowDelay);
 
 // các hàm của hiệu ứng sáng xen kẽ 
-void SangSoLe(int cycles, int speed);
+void LedXenKe(int cycles, int speed);
 
 #endif // MATRIX_ANIMATION_H
