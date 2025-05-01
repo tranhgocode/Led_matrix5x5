@@ -589,7 +589,7 @@ void SangTheoHang(int cycles, int rowSpeed, int rowDelay) {
 }
 
 
-void SangSoLe(int cycles, int speed) {
+void LedXenKe(int cycles, int speed) {
   byte leftMatrix[5] = {0};
   byte rightMatrix[5] = {0};
   
