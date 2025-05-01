@@ -51,6 +51,6 @@ void loop() {
   //LEDTheoHang(2, 50, 300);
   //delay(500);
   
-  //BanCoXenKeTuTren(2, 200);
+  //LedXenKe(2, 200);
   //delay(500);
 }
