@@ -659,3 +659,135 @@ void LedXenKe(int cycles, int speed) {
     }
   }
 }
+
+/**
+ * Tạo bộ đệm dữ liệu sóng từ các frame hoạt ảnh
+ * @param waveData Mảng 2 chiều để lưu trữ dữ liệu sóng
+ * @return Tổng số cột trong bộ đệm sóng
+ */
+int TaoWaveBuffer(byte waveData[][50]) {
+  // Số lượng frame trong hoạt ảnh của chúng ta
+  int numFrames = sizeof(song_frame) / sizeof(song_frame[0]);
+  
+  // Tính toán tổng số cột cần thiết
+  int totalCols = numFrames * 5 + 10;  // Cột bổ sung để cuộn mượt
+  
+  // Khởi tạo tất cả dữ liệu buffer về 0
+  for (int row = 0; row < 5; row++) {
+    for (int col = 0; col < totalCols; col++) {
+      waveData[row][col] = 0;
+    }
+  }
+  
+  // Đổ dữ liệu từ tất cả các frame vào buffer, đặt các frame liền kề nhau
+  for (int frameIdx = 0; frameIdx < numFrames; frameIdx++) {
+    for (int row = 0; row < 5; row++) {
+      byte pattern = song_frame[frameIdx][row];
+      
+      // Chuyển đổi mỗi byte pattern thành các bit riêng lẻ và đặt vào mảng dữ liệu sóng
+      for (int bit = 0; bit < 5; bit++) {
+        if (pattern & (0x10 >> bit)) {
+          waveData[row][frameIdx * 5 + bit] = 1;
+        }
+      }
+    }
+  }
+  
+  return totalCols;
+}
+
+/**
+ * Cập nhật một hàng đơn của matrix với dữ liệu từ bộ đệm sóng
+ * @param waveData Bộ đệm nguồn chứa các frame kết hợp
+ * @param matrixData Bộ đệm matrix đầu ra cần cập nhật
+ * @param row Hàng hiện tại đang được cập nhật
+ * @param step Bước hoạt ảnh hiện tại
+ * @param totalCols Tổng số cột trong bộ đệm sóng
+ * @param rightToLeft Hướng di chuyển (true: phải sang trái, false: trái sang phải)
+ * @param offset Độ lệch cột (0 cho matrix phải, 5 cho matrix trái)
+ */
+void UpdateData(byte waveData[][50], byte matrixData[], int row, 
+                     int step, int totalCols, bool rightToLeft, int offset) {
+  for (int col = 0; col < 5; col++) {
+    int dataCol;
+    if (rightToLeft) {
+      dataCol = col + offset + step;
+    } else {
+      dataCol = totalCols - 1 - step + col - (5 - offset);
+    }
+    
+    // Đảm bảo vị trí nằm trong phạm vi và xử lý quay vòng nếu cần
+    dataCol = dataCol % totalCols;
+    
+    if (waveData[row][dataCol]) {
+      matrixData[row] |= (0x10 >> col);
+    }
+  }
+}
+
+/**
+ * Cập nhật dữ liệu LED matrix dựa trên bước hoạt ảnh hiện tại
+ * @param waveData Bộ đệm nguồn chứa các frame kết hợp
+ * @param leftMatrix Bộ đệm đầu ra cho LED matrix trái
+ * @param rightMatrix Bộ đệm đầu ra cho LED matrix phải
+ * @param step Bước hoạt ảnh hiện tại (vị trí)
+ * @param totalCols Tổng số cột trong bộ đệm sóng
+ * @param rightToLeft Hướng di chuyển (true: phải sang trái, false: trái sang phải)
+ */
+void UpdateFrame(byte waveData[][50], byte leftMatrix[], byte rightMatrix[], 
+                          int step, int totalCols, bool rightToLeft) {
+  // Xóa cả hai matrix cho frame này
+  for (int row = 0; row < 5; row++) {
+    leftMatrix[row] = 0;
+    rightMatrix[row] = 0;
+  }
+  
+  // Điền dữ liệu vào các matrix từ vị trí thích hợp trong bộ đệm sóng
+  for (int row = 0; row < 5; row++) {
+    // Xử lý matrix phải (5 cột đầu tiên trong khung nhìn)
+    UpdateData(waveData, rightMatrix, row, step, totalCols, rightToLeft, 0);
+    
+    // Xử lý matrix trái (5 cột tiếp theo trong khung nhìn)
+    UpdateData(waveData, leftMatrix, row, step, totalCols, rightToLeft, 5);
+  }
+}
+
+/**
+ * Hiển thị frame hoạt ảnh hiện tại trong một khoảng thời gian xác định
+ * @param leftMatrix Dữ liệu LED matrix trái
+ * @param rightMatrix Dữ liệu LED matrix phải
+ * @param duration Thời gian hiển thị tính bằng mili giây
+ */
+void TocDoFrame(byte leftMatrix[], byte rightMatrix[], int duration) {
+  unsigned long startTime = millis();
+  while (millis() - startTime < duration) {
+    hienthi(leftMatrix, rightMatrix);
+  }
+}
+
+/**
+ * Hàm chính để tạo hiệu ứng sóng bằng cách cuộn các frame kết hợp theo chiều ngang
+ * @param cycles Số chu kỳ hoàn chỉnh để chạy hoạt ảnh
+ * @param speed Tốc độ di chuyển (mili giây mỗi frame)
+ * @param rightToLeft Hướng di chuyển (true = phải sang trái, false = trái sang phải)
+ */
+void LedSong(int cycles, int speed, bool rightToLeft = true) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  byte waveData[5][50] = {0};  // Bộ đệm cho các frame sóng kết hợp
+  
+  // Khởi tạo bộ đệm sóng với tất cả các frame
+  int totalCols = TaoWaveBuffer(waveData);
+  
+  // Chạy hoạt ảnh với số chu kỳ được chỉ định
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Cuộn qua toàn bộ mẫu
+    for (int step = 0; step < totalCols; step++) {
+      // Cập nhật các matrix cho bước hiện tại
+      UpdateFrame(waveData, leftMatrix, rightMatrix, step, totalCols, rightToLeft);
+      
+      // Hiển thị frame hiện tại
+      TocDoFrame(leftMatrix, rightMatrix, speed);
+    }
+  }
+}
