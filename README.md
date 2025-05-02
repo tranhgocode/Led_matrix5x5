@@ -108,4 +108,5 @@ Bằng cách quét qua các hàng rất nhanh, hiện tượng tồn tại của
 Bạn có thể dễ dàng tùy chỉnh các hiệu ứng hoặc tạo hiệu ứng mới bằng cách sửa đổi các hàm hiện có. Hàm hiển thị cơ bản `hienthi()` xử lý việc cập nhật ma trận với các mẫu mới.
 
 ## sơ đồ proteus tham khảo 
+<img src="img/SoDoNguyenLy.png" alt="bước 3" width="800" height="600">
 
