@@ -55,7 +55,7 @@ const byte song_frame[][5] = {
 */
 void hienthi(byte leftMatrix[], byte rightMatrix[]);
 
-//****** các hàm của cho chữ chạy dọc ******
+//****** 1. các hàm của cho chữ chạy dọc ******
 /*
  * Chuyển đổi chuỗi thành chữ in hoa
  - text Chuỗi đầu vào cần chuyển đổi
@@ -80,7 +80,7 @@ void HienThiFrameDoc(byte fullBuffer[][5], int startRow, int totalRows);
 */
 void scrollStrDoc(String text);
 
-//****** các hàm của cho chữ chạy ngang ******
+//****** 2. các hàm của cho chữ chạy ngang ******
 /*
  * Chuyển đổi văn bản thành dữ liệu hiển thị cho ma trận LED
  - text Chuỗi văn bản cần hiển thị
@@ -110,7 +110,7 @@ void TocDoFrameNgang(byte leftMatrix[], byte rightMatrix[], int duration);
 */
 void scrollStrNgang(String text);
 
-//****** các hàm của animation xoay ****** 
+//****** 3. các hàm của animation xoay ****** 
 /*
  * Tạo hiệu ứng các LED sáng tuần tự từ ngoài vào trong theo hình xoắn ốc, sau đó tắt từ trong ra ngoài
  - cycles Số lần lặp lại hiệu ứng
@@ -118,7 +118,7 @@ void scrollStrNgang(String text);
 */
 void LedXoay(int cycles, int speed);
 
-//****** các hàm của nháy ngẫu nhiên mà đến sáng theo tỉ lệ ******
+//****** 4. các hàm của nháy ngẫu nhiên mà đến sáng theo tỉ lệ ******
 /*
  * Tạo hiệu ứng các hàng LED thay đổi ngẫu nhiên theo xác suất
  - duration Thời gian chạy hiệu ứng (ms)
@@ -126,7 +126,7 @@ void LedXoay(int cycles, int speed);
 */
 void randomFlicker(int duration, int flickerRate);
 
-//****** các hàm của điểm nháy ngẫu nhiên ******
+//****** 5. các hàm của điểm nháy ngẫu nhiên ******
 /*
  * Tạo hiệu ứng lấp lánh với các điểm sáng xuất hiện và biến mất ngẫu nhiên 
  - duration Thời gian chạy hiệu ứng (ms)
@@ -134,7 +134,7 @@ void randomFlicker(int duration, int flickerRate);
 */
 void randomPixelFlicker(int duration, int density);
 
-//****** các hàm của hiệu ứng giọt nước ******
+//****** 6. các hàm của hiệu ứng giọt nước ******
 /*
  * Hiệu ứng giọt nước lan tỏa
  - cycles Số lần lặp lại hiệu ứng
@@ -142,7 +142,7 @@ void randomPixelFlicker(int duration, int density);
 */
 void HieuUngGiotNuoc(int cycles, int speed);
 
-//****** các hàm của hiệu ứng mưa rơi ******
+//****** 7. các hàm của hiệu ứng mưa rơi ******
 /*
  * Các giọt mưa xuất hiện ngẫu nhiên từ trên cao và rơi xuống dưới
  - duration Thời gian chạy hiệu ứng (ms)
@@ -150,7 +150,7 @@ void HieuUngGiotNuoc(int cycles, int speed);
 */
 void HieuUngMua(int duration, int density);
 
-//****** các hàm của hiệu ứng sáng theo hàng ******
+//****** 8. các hàm của hiệu ứng sáng theo hàng ******
 /*
  - Hiệu ứng sáng từng LED theo từng hàng
  - Sáng hết 1 hàng rồi chạy xuống hàng tiếp theo
@@ -161,7 +161,7 @@ void HieuUngMua(int duration, int density);
 void SangTheoHang(int cycles, int rowSpeed, int rowDelay);
 
 
-//****** các hàm của hiệu ứng sáng xen kẽ ******
+//****** 9. các hàm của hiệu ứng sáng xen kẽ ******
 /*
  * Hàm tạo hiệu ứng bàn cờ xen kẽ trên hai LED matrix
  - cycles Số chu kỳ hoàn chỉnh của hiệu ứng
@@ -169,7 +169,7 @@ void SangTheoHang(int cycles, int rowSpeed, int rowDelay);
 */
 void LedXenKe(int cycles, int speed);
 
-//****** các hàm của animation sóng ******
+//****** 10. các hàm của animation sóng ******
 /*
  * Tạo bộ đệm dữ liệu sóng từ các frame hoạt ảnh
  - waveData Mảng 2 chiều để lưu trữ dữ liệu sóng
