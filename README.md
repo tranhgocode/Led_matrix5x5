@@ -73,7 +73,7 @@ LedSong(2, 150, true);  // 2 chu kỳ, 150ms mỗi khung hình, hướng phải 
 ```cpp
 void loop() {
   // Chữ chạy ngang
-  scrollStrNgang("ARDUINO");
+  scrollStrNgang("HELLO");
   delay(500);
   
   // Hiệu ứng xoáy
