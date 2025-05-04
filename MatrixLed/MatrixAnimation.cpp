@@ -791,3 +791,75 @@ void LedSong(int cycles, int speed, bool rightToLeft = true) {
     }
   }
 }
+
+/**
+ * Hiệu ứng hình Pacman nhấp nháy
+ * @param cycles Số chu kỳ hoàn chỉnh của hiệu ứng
+ * @param speed Tốc độ chuyển đổi giữa các khung hình (ms)
+ */
+void pacman(int cycles, int speed) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  // Số lượng khung hình trong animation
+  int numFrames = sizeof(pacman_frame) / sizeof(pacman_frame[0]);
+  
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Chạy qua từng khung hình trong chu kỳ
+    for (int frame = 0; frame < numFrames; frame++) {
+      // Xóa cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = 0;
+        rightMatrix[row] = 0;
+      }
+      
+      // Điền dữ liệu vào cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = pacman_frame[frame][row];
+        rightMatrix[row] = pacman_frame[frame][row];
+      }
+      
+      // Hiển thị khung hình hiện tại
+      unsigned long startTime = millis();
+      while (millis() - startTime < speed) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+  }
+}
+
+/**
+ * Hiệu ứng hình trái tim đập
+ * @param cycles Số chu kỳ hoàn chỉnh của hiệu ứng
+ * @param speed Tốc độ chuyển đổi giữa các khung hình (ms)
+ */
+void trai_tim(int cycles, int speed) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  // Số lượng khung hình trong animation
+  int numFrames = sizeof(heart_frame) / sizeof(heart_frame[0]);
+  
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Chạy qua từng khung hình trong chu kỳ
+    for (int frame = 0; frame < numFrames; frame++) {
+      // Xóa cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = 0;
+        rightMatrix[row] = 0;
+      }
+      
+      // Điền dữ liệu vào cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = heart_frame[frame][row];
+        rightMatrix[row] = heart_frame[frame][row];
+      }
+      
+      // Hiển thị khung hình hiện tại
+      unsigned long startTime = millis();
+      while (millis() - startTime < speed) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+  }
+}
