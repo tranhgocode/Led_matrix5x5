@@ -64,6 +64,12 @@ LedXenKe(2, 200);  // 2 chu kỳ, 200ms mỗi bước
 
 // Hiệu ứng sóng
 LedSong(2, 150, true);  // 2 chu kỳ, 150ms mỗi khung hình, hướng phải sang trái
+
+// hiệu ứng pacman
+pacman(3, 200);
+
+// hiệu ứng trái tim
+trai_tim(5, 300);
 ```
 
 ## Cách Sử Dụng
@@ -108,5 +114,5 @@ Bằng cách quét qua các hàng rất nhanh, hiện tượng tồn tại của
 Bạn có thể dễ dàng tùy chỉnh các hiệu ứng hoặc tạo hiệu ứng mới bằng cách sửa đổi các hàm hiện có. Hàm hiển thị cơ bản `hienthi()` xử lý việc cập nhật ma trận với các mẫu mới.
 
 ## sơ đồ proteus tham khảo 
-<img src="img/SoDoNguyenLy.png" alt="bước 3" width="1000" height="600">
+<img src="img/SoDoproteus.png" alt="bước 3" width="1000" height="600">
 
