@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 
+// frane của các chữ cái 
 const byte chu[][5] = {
     {0x04,0x0a,0x1f,0x11,0x11}, //A 
     {0x1c,0x12,0x1c,0x12,0x1c}, //B
@@ -32,6 +33,7 @@ const byte chu[][5] = {
     {0x1f,0x02,0x04,0x08,0x1f}, //Z
 };
 
+// frame của animation giọt nước 
 const byte frame_Giot_nuoc[][5] = {
     {0x00,0x00,0x04,0x00,0x00},
     {0x00,0x04,0x0a,0x04,0x00},
@@ -40,12 +42,26 @@ const byte frame_Giot_nuoc[][5] = {
     {0x11,0x00,0x00,0x00,0x11}
 };
 
+// frame của sóng
 const byte song_frame[][5] = {
     {0x02,0x07,0x0d,0x18,0x10},
     {0x01,0x03,0x16,0x1c,0x08},
     {0x00,0x11,0x1b,0x0e,0x04},
     {0x10,0x18,0x0c,0x06,0x03}
 };
+
+//frame animation trái tim
+const byte heart_frame[][5] = {
+  {0x0a,0x15,0x11,0x0a,0x04},
+  {0x0a,0x1f,0x1f,0x0e,0x04}
+};
+
+//frame animation pacman
+const byte pacman_frame[][5] = {
+  {0x0e,0x1f,0x18,0x1f,0x0e},
+  {0x0e,0x1c,0x18,0x1c,0x0e,}
+};
+
 
 
 /*
@@ -212,5 +228,20 @@ void TocDoFrame(byte leftMatrix[], byte rightMatrix[], int duration);
 */
 void LedSong(int cycles, int speed, bool rightToLeft = true);
 
+//****** 11. các hàm của animation pacman ******
+/*
+ * Hiệu ứng hình Pacman nhấp nháy
+ - cycles Số chu kỳ hoàn chỉnh của hiệu ứng
+ - speed Tốc độ chuyển đổi giữa các khung hình (ms)
+*/
+void pacman(int cycles, int speed);
+
+//****** 12. các hàm của animation trái tim ******
+/*
+ * Hiệu ứng hình trái tim đập
+ - cycles Số chu kỳ hoàn chỉnh của hiệu ứng
+ - speed Tốc độ chuyển đổi giữa các khung hình (ms)
+*/
+void trai_tim(int cycles, int speed) {
 
 #endif // MATRIX_ANIMATION_H
