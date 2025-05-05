@@ -6,7 +6,7 @@
 class LEDMatrix {
   public:
     // set up chân
-    LEDMatrix(uint8_t sh_pin, uint8_t ds_pin, uint8_t st_pin, uint8_t row_pins[]);
+    LEDMatrix_pin(uint8_t sh_pin, uint8_t ds_pin, uint8_t st_pin, uint8_t row_pins[]);
     
     // Phương thức khởi tạo
     void begin();
