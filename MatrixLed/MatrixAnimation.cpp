@@ -863,3 +863,51 @@ void trai_tim(int cycles, int speed) {
     }
   }
 }
+
+// Hàm chọn hiệu ứng LED
+void ChonAnimation(int number) {
+  switch (number) {
+    case 1:
+        Serial.println("dang chay hieu ung Xoay");
+        LedXoay(2, 50);
+        break;
+    case 2:
+        Serial.println("dang chay hieu ung Nhap nhay ngau nhien");
+        randomFlicker(500, 10);
+        break;
+    case 3:
+        Serial.println("dang chay hieu ung Nhap nhay diem ngau nhien");
+        randomPixelFlicker(500, 2);
+        break;
+    case 4:
+        Serial.println("dang chay hieu ung Giot nuoc");
+        HieuUngGiotNuoc(2, 100);
+        break;
+    case 5:
+        Serial.println("dang chay hieu ung Mua");
+        HieuUngMua(2000, 3);
+        break;
+    case 6:
+        Serial.println("dang chay hieu ung LED theo hang");
+        LEDTheoHang(2, 50, 300);
+        break;
+    case 7:
+        Serial.println("dang chay hieu ung LED xen ke");
+        LedXenKe(2, 200);
+        break;
+    case 8:
+        Serial.println("dang chay hieu ung LED song");
+        LedSong(2, 150, true);
+        break;
+    case 9:
+        Serial.println("dang chay hieu ung Pacman");
+        pacman(3, 200);
+        break; 
+    case 10:
+        Serial.println("dang chay hieu ung Trai tim");
+        trai_tim(5, 300);
+        break;
+    default:
+        Serial.println("khong hop le");
+    }
+}
