@@ -242,6 +242,9 @@ void pacman(int cycles, int speed);
  - cycles Số chu kỳ hoàn chỉnh của hiệu ứng
  - speed Tốc độ chuyển đổi giữa các khung hình (ms)
 */
-void trai_tim(int cycles, int speed) {
+void trai_tim(int cycles, int speed);
+
+// Hàm chọn hiệu ứng LED  
+void ChonAnimation(int number);
 
 #endif // MATRIX_ANIMATION_H
