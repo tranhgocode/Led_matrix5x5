@@ -666,4 +666,215 @@ void LEDMatrix::LedXenKe(int cycles, int speed) {
   }
 }
 
+// tạo bộ đệm cho sóng từ các frame
+int LEDMatrix::TaoWaveBuffer(byte waveData[][50]) {
+  // Số lượng frame trong hoạt ảnh của chúng ta
+  int numFrames = sizeof(song_frame) / sizeof(song_frame[0]);
+  
+  // Tính toán tổng số cột cần thiết
+  int totalCols = numFrames * 5 + 10;  // Cột bổ sung để cuộn mượt
+  
+  // Khởi tạo tất cả dữ liệu buffer về 0
+  for (int row = 0; row < 5; row++) {
+    for (int col = 0; col < totalCols; col++) {
+      waveData[row][col] = 0;
+    }
+  }
+  
+  // Đổ dữ liệu từ tất cả các frame vào buffer, đặt các frame liền kề nhau
+  for (int frameIdx = 0; frameIdx < numFrames; frameIdx++) {
+    for (int row = 0; row < 5; row++) {
+      byte pattern = song_frame[frameIdx][row];
+      
+      // Chuyển đổi mỗi byte pattern thành các bit riêng lẻ và đặt vào mảng dữ liệu sóng
+      for (int bit = 0; bit < 5; bit++) {
+        if (pattern & (0x10 >> bit)) {
+          waveData[row][frameIdx * 5 + bit] = 1;
+        }
+      }
+    }
+  }
+  
+  return totalCols;
+}
 
+// Cập nhật một hàng đơn của matrix với dữ liệu từ bộ đệm sóng
+void LEDMatrix::UpdateData(byte waveData[][50], byte matrixData[], int row, 
+                     int step, int totalCols, bool rightToLeft, int offset) {
+  for (int col = 0; col < 5; col++) {
+    int dataCol;
+    if (rightToLeft) {
+      dataCol = col + offset + step;
+    } else {
+      dataCol = totalCols - 1 - step + col - (5 - offset);
+    }
+    
+    // Đảm bảo vị trí nằm trong phạm vi và xử lý quay vòng nếu cần
+    dataCol = dataCol % totalCols;
+    
+    if (waveData[row][dataCol]) {
+      matrixData[row] |= (0x10 >> col);
+    }
+  }
+}
+
+// Cập nhật dữ liệu trên các frame
+void LEDMatrix::UpdateFrame(byte waveData[][50], byte leftMatrix[], byte rightMatrix[], 
+                          int step, int totalCols, bool rightToLeft) {
+  // Xóa cả hai matrix cho frame này
+  for (int row = 0; row < 5; row++) {
+    leftMatrix[row] = 0;
+    rightMatrix[row] = 0;
+  }
+  
+  // Điền dữ liệu vào các matrix từ vị trí thích hợp trong bộ đệm sóng
+  for (int row = 0; row < 5; row++) {
+    // Xử lý matrix phải (5 cột đầu tiên trong khung nhìn)
+    UpdateData(waveData, rightMatrix, row, step, totalCols, rightToLeft, 0);
+    
+    // Xử lý matrix trái (5 cột tiếp theo trong khung nhìn)
+    UpdateData(waveData, leftMatrix, row, step, totalCols, rightToLeft, 5);
+  }
+}
+
+// tốc độ hiển thị
+void LEDMatrix::TocDoFrame(byte leftMatrix[], byte rightMatrix[], int duration) {
+  unsigned long startTime = millis();
+  while (millis() - startTime < duration) {
+    hienthi(leftMatrix, rightMatrix);
+  }
+}
+
+//hiệu ứng sóng 
+void LEDMatrix::LedSong(int cycles, int speed, bool rightToLeft) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  byte waveData[5][50] = {0};  // Bộ đệm cho các frame sóng kết hợp
+  
+  // Khởi tạo bộ đệm sóng với tất cả các frame
+  int totalCols = TaoWaveBuffer(waveData);
+  
+  // Chạy hoạt ảnh với số chu kỳ được chỉ định
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Cuộn qua toàn bộ mẫu
+    for (int step = 0; step < totalCols; step++) {
+      // Cập nhật các matrix cho bước hiện tại
+      UpdateFrame(waveData, leftMatrix, rightMatrix, step, totalCols, rightToLeft);
+      
+      // Hiển thị frame hiện tại
+      TocDoFrame(leftMatrix, rightMatrix, speed);
+    }
+  }
+}
+
+// hiệu ứng pacman
+void LEDMatrix::pacman(int cycles, int speed) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  // Số lượng khung hình trong animation
+  int numFrames = sizeof(pacman_frame) / sizeof(pacman_frame[0]);
+  
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Chạy qua từng khung hình trong chu kỳ
+    for (int frame = 0; frame < numFrames; frame++) {
+      // Xóa cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = 0;
+        rightMatrix[row] = 0;
+      }
+      
+      // Điền dữ liệu vào cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = pacman_frame[frame][row];
+        rightMatrix[row] = pacman_frame[frame][row];
+      }
+      
+      // Hiển thị khung hình hiện tại
+      unsigned long startTime = millis();
+      while (millis() - startTime < speed) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+  }
+}
+
+// hiệu ứng trái tim 
+void LEDMatrix::trai_tim(int cycles, int speed) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  // Số lượng khung hình trong animation
+  int numFrames = sizeof(heart_frame) / sizeof(heart_frame[0]);
+  
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Chạy qua từng khung hình trong chu kỳ
+    for (int frame = 0; frame < numFrames; frame++) {
+      // Xóa cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = 0;
+        rightMatrix[row] = 0;
+      }
+      
+      // Điền dữ liệu vào cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = heart_frame[frame][row];
+        rightMatrix[row] = heart_frame[frame][row];
+      }
+      
+      // Hiển thị khung hình hiện tại
+      unsigned long startTime = millis();
+      while (millis() - startTime < speed) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+  }
+}
+
+// chọn animation
+void LEDMatrix::ChonAnimation(int number) {
+  switch (number) {
+    case 1:
+        Serial.println("dang chay hieu ung Xoay");
+        LedXoay(2, 50);
+        break;
+    case 2:
+        Serial.println("dang chay hieu ung Nhap nhay ngau nhien");
+        randomFlicker(500, 10);
+        break;
+    case 3:
+        Serial.println("dang chay hieu ung Nhap nhay diem ngau nhien");
+        randomPixelFlicker(500, 2);
+        break;
+    case 4:
+        Serial.println("dang chay hieu ung Giot nuoc");
+        HieuUngGiotNuoc(2, 100);
+        break;
+    case 5:
+        Serial.println("dang chay hieu ung Mua");
+        HieuUngMua(2000, 3);
+        break;
+    case 6:
+        Serial.println("dang chay hieu ung LED theo hang");
+        LEDTheoHang(2, 50, 300);
+        break;
+    case 7:
+        Serial.println("dang chay hieu ung LED xen ke");
+        LedXenKe(2, 200);
+        break;
+    case 8:
+        Serial.println("dang chay hieu ung LED song");
+        LedSong(2, 150, true);
+        break;
+    case 9:
+        Serial.println("dang chay hieu ung Pacman");
+        pacman(3, 200);
+        break; 
+    case 10:
+        Serial.println("dang chay hieu ung Trai tim");
+        trai_tim(5, 300);
+        break;
+    default:
+        Serial.println("khong hop le");
+  }
+}
