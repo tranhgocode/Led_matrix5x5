@@ -364,7 +364,7 @@ void LEDMatrix::LedXoay(int cycles, int speed) {
   }
 }
 
-// Hàm tạo hiệu ứng nháy ngẫu nhiên
+// tạo hiệu ứng nháy ngẫu nhiên theo tỉ lệ
 void LEDMatrix::randomFlicker(int duration, int flickerRate) {
   byte leftMatrix[5] = {0};
   byte rightMatrix[5] = {0};
@@ -393,4 +393,269 @@ void LEDMatrix::randomFlicker(int duration, int flickerRate) {
     delay(50);
   }
 }
+
+// tạo hiệu ứng nháy ngẫu nhiên theo điểm 
+void LEDMatrix::randomPixelFlicker(int duration, int density) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  unsigned long startTime = millis();
+  
+  // Chạy hiệu ứng trong thời gian duration (ms)
+  while (millis() - startTime < duration) {
+    // Xóa cả hai ma trận
+    for (int row = 0; row < 5; row++) {
+      leftMatrix[row] = 0;
+      rightMatrix[row] = 0;
+    }
+    
+    // Thêm ngẫu nhiên các LED sáng
+    for (int i = 0; i < density; i++) {
+      // Chọn ngẫu nhiên ma trận (trái hoặc phải)
+      int matrix = random(2);
+      
+      // Chọn vị trí ngẫu nhiên (hàng và cột)
+      int row = random(5);
+      int col = random(5);
+      
+      // Bật LED tại vị trí đó
+      if (matrix == 0) {
+        leftMatrix[row] |= (0x10 >> col);
+      } else {
+        rightMatrix[row] |= (0x10 >> col);
+      }
+    }
+    
+    // Hiển thị trạng thái hiện tại
+    unsigned long displayTime = millis();
+    while (millis() - displayTime < 100) {
+      hienthi(leftMatrix, rightMatrix);
+    }
+  }
+}
+
+// hiệu ứng giọt nước 
+void LEDMatrix::HieuUngGiotNuoc(int cycles, int speed) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Xóa cả hai ma trận
+    for (int i = 0; i < 5; i++) {
+      leftMatrix[i] = 0;
+      rightMatrix[i] = 0;
+    }
+    
+    // Hiển thị lần lượt các khung hình lan tỏa
+    for (int frame = 0; frame < 5; frame++) {
+      // Điền dữ liệu vào cả hai ma trận
+      for (int row = 0; row < 5; row++) {
+        leftMatrix[row] = frame_Giot_nuoc[frame][row];
+        rightMatrix[row] = frame_Giot_nuoc[frame][row];
+      }
+      
+      // Hiển thị khung hình hiện tại
+      unsigned long startTime = millis();
+      while (millis() - startTime < speed) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+    
+    // Tạm dừng trước khi bắt đầu chu kỳ mới
+    delay(speed * 2);
+  }
+}
+
+// hiệu ứng mưa
+void LEDMatrix::HieuUngMua(int duration, int density) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  unsigned long startTime = millis();
+  
+  // Mảng giọt mưa cho mỗi cột
+  int rainDrops[10] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+  
+  // Chạy hiệu ứng trong thời gian duration (ms)
+  while (millis() - startTime < duration) {
+    // Xóa cả hai ma trận
+    for (int row = 0; row < 5; row++) {
+      leftMatrix[row] = 0;
+      rightMatrix[row] = 0;
+    }
+    
+    // Tạo giọt mưa mới với xác suất dựa trên mật độ
+    for (int col = 0; col < 10; col++) {
+      // Nếu không có giọt mưa trong cột này
+      if (rainDrops[col] == -1) {
+        // Tạo giọt mưa mới với xác suất phụ thuộc vào mật độ
+        if (random(100) < density * 5) {
+          rainDrops[col] = 0;  // Bắt đầu từ hàng đầu tiên
+        }
+      } 
+      // Di chuyển giọt mưa xuống
+      else {
+        rainDrops[col]++;
+        // Nếu giọt mưa đã ra khỏi màn hình
+        if (rainDrops[col] >= 5) {
+          rainDrops[col] = -1;  // Xóa giọt mưa
+        }
+      }
+      
+      // Vẽ các giọt mưa
+      if (rainDrops[col] >= 0 && rainDrops[col] < 5) {
+        if (col < 5) {
+          // Ma trận phải (cột 0-4)
+          rightMatrix[rainDrops[col]] |= (0x10 >> col);
+        } else {
+          // Ma trận trái (cột 5-9)
+          leftMatrix[rainDrops[col]] |= (0x10 >> (col - 5));
+        }
+      }
+    }
+    
+    // Hiển thị trạng thái hiện tại
+    unsigned long frameTime = millis();
+    while (millis() - frameTime < 100) {
+      hienthi(leftMatrix, rightMatrix);
+    }
+  }
+}
+
+// hết 1 hàng chạy xuống hàng tiếp theo
+void LEDMatrix::LEDTheoHang(int cycles, int rowSpeed, int rowDelay) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Xóa tất cả các ma trận
+    for (int row = 0; row < 5; row++) {
+      leftMatrix[row] = 0;
+      rightMatrix[row] = 0;
+    }
+    
+    // Duyệt qua từng hàng
+    for (int row = 0; row < 5; row++) {
+      // Duyệt qua từng LED trong hàng phải trước (thứ tự từ trái sang phải)
+      for (int col = 0; col < 5; col++) {
+        // Bật LED hiện tại cho ma trận phải
+        rightMatrix[row] |= (0x10 >> col);
+        
+        // Hiển thị trạng thái hiện tại
+        unsigned long startTime = millis();
+        while (millis() - startTime < rowSpeed) {
+          hienthi(leftMatrix, rightMatrix);
+        }
+      }
+      
+      // Duyệt qua từng LED trong hàng trái (thứ tự từ trái sang phải)
+      for (int col = 0; col < 5; col++) {
+        // Bật LED hiện tại cho ma trận trái
+        leftMatrix[row] |= (0x10 >> col);
+        
+        // Hiển thị trạng thái hiện tại
+        unsigned long startTime = millis();
+        while (millis() - startTime < rowSpeed) {
+          hienthi(leftMatrix, rightMatrix);
+        }
+      }
+      
+      // Dừng một chút khi hàng đã sáng đủ
+      unsigned long pauseTime = millis();
+      while (millis() - pauseTime < rowDelay) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+    
+    // Hiển thị toàn bộ ma trận sáng một lúc trước khi bắt đầu chu kỳ mới
+    unsigned long endCycleTime = millis();
+    while (millis() - endCycleTime < rowDelay * 2) {
+      hienthi(leftMatrix, rightMatrix);
+    }
+    
+    // Xóa ma trận và tạm dừng trước khi bắt đầu chu kỳ mới
+    for (int row = 0; row < 5; row++) {
+      leftMatrix[row] = 0;
+      rightMatrix[row] = 0;
+    }
+    
+    unsigned long betweenCycleTime = millis();
+    while (millis() - betweenCycleTime < rowDelay) {
+      hienthi(leftMatrix, rightMatrix);
+    }
+  }
+}
+
+// tạo hiệu ứng bàn cờ 
+void LEDMatrix::LedXenKe(int cycles, int speed) {
+  byte leftMatrix[5] = {0};
+  byte rightMatrix[5] = {0};
+  
+  // Định nghĩa mẫu bàn cờ chẵn lẻ
+  byte checkerPattern1 = 0b10101;  // Mẫu 1: xen kẽ bắt đầu với LED sáng
+  byte checkerPattern2 = 0b01010;  // Mẫu 2: xen kẽ bắt đầu với LED tắt
+  
+  for (int cycle = 0; cycle < cycles; cycle++) {
+    // Phase 1: Hiển thị bàn cờ từ trên xuống dưới
+    
+    // Xóa tất cả các ma trận
+    for (int row = 0; row < 5; row++) {
+      leftMatrix[row] = 0;
+      rightMatrix[row] = 0;
+    }
+    
+    // Hiện từng hàng của bàn cờ từ trên xuống dưới
+    for (int row = 0; row < 5; row++) {
+      // Xác định mẫu dựa trên hàng chẵn hoặc lẻ
+      byte pattern = (row % 2 == 0) ? checkerPattern1 : checkerPattern2;
+      
+      // Hiện mẫu ở hàng hiện tại
+      rightMatrix[row] = pattern;
+      leftMatrix[row] = pattern;
+      
+      // Hiển thị trạng thái hiện tại một lúc
+      unsigned long startTime = millis();
+      while (millis() - startTime < speed) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+    
+    // Tạm dừng để xem toàn bộ bàn cờ
+    unsigned long pauseTime = millis();
+    while (millis() - pauseTime < speed * 2) {
+      hienthi(leftMatrix, rightMatrix);
+    }
+    
+    // Phase 2: Hiển thị bàn cờ đảo ngược từ trên xuống dưới
+    
+    // Xóa tất cả các ma trận
+    for (int row = 0; row < 5; row++) {
+      leftMatrix[row] = 0;
+      rightMatrix[row] = 0;
+    }
+    
+    // Hiện từng hàng của bàn cờ đảo ngược từ trên xuống dưới
+    for (int row = 0; row < 5; row++) {
+      // Xác định mẫu đảo ngược dựa trên hàng chẵn hoặc lẻ
+      byte pattern = (row % 2 == 0) ? checkerPattern2 : checkerPattern1;
+      
+      // Hiện mẫu ở hàng hiện tại
+      rightMatrix[row] = pattern;
+      leftMatrix[row] = pattern;
+      
+      // Hiển thị trạng thái hiện tại một lúc
+      unsigned long startTime = millis();
+      while (millis() - startTime < speed) {
+        hienthi(leftMatrix, rightMatrix);
+      }
+    }
+    
+    // Tạm dừng để xem toàn bộ bàn cờ đảo ngược
+    pauseTime = millis();
+    while (millis() - pauseTime < speed * 2) {
+      hienthi(leftMatrix, rightMatrix);
+    }
+  }
+}
+
 
