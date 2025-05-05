@@ -57,7 +57,7 @@ const byte LEDMatrix::song_frame[][5] = {
 
 
 // khởi tạo chân
-LEDMatrix::LEDMatrix_pin(uint8_t sh_pin, uint8_t ds_pin, uint8_t st_pin, uint8_t row_pins[]) {
+LEDMatrix::LEDMatrix(uint8_t sh_pin, uint8_t ds_pin, uint8_t st_pin, uint8_t row_pins[]) {
   _sh_pin = sh_pin;
   _ds_pin = ds_pin;
   _st_pin = st_pin;
@@ -242,6 +242,38 @@ int LEDMatrix::TaoBuffer(String text, byte displayData[][200]) {
   return bufferCol;
 }
 
+// Cập nhật dữ liệu cho ma trận LED
+void LEDMatrix::HienThiFrameNgang(byte displayData[][200], int shift, int totalCols, byte leftMatrix[], byte rightMatrix[]) {
+  // Xóa cả hai ma trận
+  for (int row = 0; row < 5; row++) {
+    leftMatrix[row] = 0;
+    rightMatrix[row] = 0;
+  }
+  
+  // Tạo dữ liệu cho cả hai ma trận
+  for (int row = 0; row < 5; row++) {
+    // Xử lý ma trận phải (hiển thị trước)
+    for (int col = 0; col < 5; col++) {
+      int dataCol = shift + col;
+      if (dataCol >= 0 && dataCol < totalCols) {
+        if (displayData[row][dataCol]) {
+          rightMatrix[row] |= (1 << (4 - col));  // Định dạng MSB
+        }
+      }
+    }
+    
+    // Xử lý ma trận trái (theo sau ma trận phải)
+    for (int col = 0; col < 5; col++) {
+      int dataCol = shift + col + 5;  // Độ lệch 5 cột so với ma trận phải
+      if (dataCol >= 0 && dataCol < totalCols) {
+        if (displayData[row][dataCol]) {
+          leftMatrix[row] |= (1 << (4 - col));  // Định dạng MSB
+        }
+      }
+    }
+  }
+}
+
 // tốc độ chạy của chữ
 void LEDMatrix::TocDoFrameNgang(byte leftMatrix[], byte rightMatrix[], int duration) {
   unsigned long startTime = millis();
@@ -249,6 +281,8 @@ void LEDMatrix::TocDoFrameNgang(byte leftMatrix[], byte rightMatrix[], int durat
     hienthi(leftMatrix, rightMatrix);
   }
 }
+
+
 
 // hàm chữ chạy ngang
 void LEDMatrix::scrollStrNgang(String text) {
