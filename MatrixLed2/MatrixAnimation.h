@@ -47,6 +47,7 @@ class LEDMatrix {
     static const byte heart_frame[][5];
     static const byte pacman_frame[][5];
     static const byte frame_Giot_nuoc[][5];
+    static const byte song_frame[][5];
     
     // Hàm hỗ trợ cho hiển thị chữ dọc 
     String InHoa(String text);
