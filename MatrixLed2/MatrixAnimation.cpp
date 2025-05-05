@@ -69,6 +69,9 @@ LEDMatrix::LEDMatrix_pin(uint8_t sh_pin, uint8_t ds_pin, uint8_t st_pin, uint8_t
 
 // khởi tạo conf cho các chân
 void LEDMatrix::begin() {
+  //baud rate của USART
+  Serial.begin(9600);
+  
   // Cấu hình chân shift register
   pinMode(_sh_pin, OUTPUT);
   pinMode(_ds_pin, OUTPUT);
