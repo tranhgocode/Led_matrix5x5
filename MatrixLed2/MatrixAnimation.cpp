@@ -877,11 +877,15 @@ void LEDMatrix::ChonAnimation(int number) {
         break;
     case 2:
         Serial.println("dang chay hieu ung Nhap nhay ngau nhien");
-        randomFlicker(500, 10);
+        for(int i = 0; i < 10; i++) {
+            randomFlicker(500, 10);
+        }
         break;
     case 3:
         Serial.println("dang chay hieu ung Nhap nhay diem ngau nhien");
-        randomPixelFlicker(500, 2);
+        for (int i = 0; i < 10; i++) {
+            randomPixelFlicker(500, 2);
+        }
         break;
     case 4:
         Serial.println("dang chay hieu ung Giot nuoc");
