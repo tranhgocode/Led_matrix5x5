@@ -36,44 +36,44 @@ Bộ điều khiển ma trận LED cung cấp nhiều hiệu ứng animation và
 ### Hiển Thị Văn Bản
 ```cpp
 // Chữ chạy ngang từ phải sang trái
-scrollStrNgang("HELLO");
+matrix.scrollStrNgang("HELLO");
 
 // Chữ chạy dọc từ dưới lên trên
-scrollStrDoc("HELLO");
+matrix.scrollStrDoc("HELLO");
 ```
 
 ### Các Hiệu Ứng Animation
 
 ```cpp
 // Hiệu ứng xoáy (LEDs sáng theo hình xoắn ốc vào trong, rồi ra ngoài)
-LedXoay(2, 50);  // 2 chu kỳ, tốc độ 50ms
+matrix.LedXoay(2, 50);  // 2 chu kỳ, tốc độ 50ms
 
 // Hiệu ứng nháy ngẫu nhiên (các vùng ngẫu nhiên của ma trận nháy)
-randomFlicker(2000, 10);  // 2000ms, tỉ lệ nháy 10%
+matrix.randomFlicker(2000, 10);  // 2000ms, tỉ lệ nháy 10%
 
 // Hiệu ứng điểm nháy ngẫu nhiên (các LED đơn lẻ nháy ngẫu nhiên)
-randomPixelFlicker(2000, 5);  // 2000ms, 5 điểm sáng
+matrix.randomPixelFlicker(2000, 5);  // 2000ms, 5 điểm sáng
 
 // Hiệu ứng giọt nước (mô phỏng gợn sóng lan từ trung tâm)
-HieuUngGiotNuoc(2, 100);  // 2 chu kỳ, tốc độ 100ms
+matrix.HieuUngGiotNuoc(2, 100);  // 2 chu kỳ, tốc độ 100ms
 
 // Hiệu ứng mưa (mô phỏng giọt mưa rơi từ trên xuống)
-HieuUngMua(2000, 2);  // 2000ms, mật độ 2
+matrix.HieuUngMua(2000, 2);  // 2000ms, mật độ 2
 
 // Sáng LED theo từng hàng
-LEDTheoHang(2, 50, 300);  // 2 chu kỳ, 50ms mỗi LED, 300ms mỗi hàng
+matrix.LEDTheoHang(2, 50, 300);  // 2 chu kỳ, 50ms mỗi LED, 300ms mỗi hàng
 
 // Hiệu ứng bàn cờ xen kẽ
-LedXenKe(2, 200);  // 2 chu kỳ, 200ms mỗi bước
+matrix.LedXenKe(2, 200);  // 2 chu kỳ, 200ms mỗi bước
 
 // Hiệu ứng sóng
-LedSong(2, 150, true);  // 2 chu kỳ, 150ms mỗi khung hình, hướng phải sang trái
+matrix.LedSong(2, 150, true);  // 2 chu kỳ, 150ms mỗi khung hình, hướng phải sang trái
 
 // hiệu ứng pacman
-pacman(3, 200);
+matrix.pacman(3, 200);
 
 // hiệu ứng trái tim
-trai_tim(5, 300);
+matrix.trai_tim(5, 300);
 ```
 
 ## Cách Sử Dụng
@@ -83,11 +83,11 @@ trai_tim(5, 300);
 ```cpp
 void loop() {
   // Chữ chạy ngang
-  scrollStrNgang("HELLO");
+  matrix.scrollStrNgang("HELLO");
   delay(500);
   
   // Hiệu ứng xoáy
-  LedXoay(2, 50);
+  matrix.LedXoay(2, 50);
   delay(500);
 }
 ```
