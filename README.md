@@ -17,12 +17,16 @@ Mã nguồn này điều khiển hệ thống hiển thị gồm hai ma trận L
 ## Cấu Hình Chân
 
 ```cpp
+// Định nghĩa các chân
 #define SH_PIN 13  // Shift Clock (SH)
 #define DS_PIN 12  // Data Serial (DS)
 #define ST_PIN 11  // Storage Clock (ST)
 
-// Cấu hình chân hàng
-int rowPins[5] = {10, 9, 8, 7, 6};
+// Thiết lập các chân hàng
+uint8_t rowPins[5] = {10, 9, 8, 7, 6};
+
+// Khởi tạo đối tượng LEDMatrix
+LEDMatrix matrix(SH_PIN, DS_PIN, ST_PIN, rowPins);
 ```
 
 ## Tính Năng
