@@ -1,6 +1,11 @@
 # Led_matrix5x5
 thư viện về các animation của led_matrix_5x5 và ví dụ 
 
+Thành viên nhóm gồm 3 người 
+- Trần Anh
+- Phạm Văn Chiến
+- Phạm Ngọc Tuấn Anh 
+
 # Mạch Hiển Thị LED Ma Trận
 
 ## Tổng Quan
